@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nova Série{% endblock %}
+
+{% block body %}
+    <form method="post" action="/series/create">
+        <label for="name">Nome da série:</label>
+        <input type="text" name="name" id="name" autofocus>
+
+        <button class="btn btn-dark">Adicionar</button>
+    </form>
+{% endblock %}
