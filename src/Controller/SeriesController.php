@@ -10,6 +10,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class SeriesController extends AbstractController
 {
@@ -30,7 +32,12 @@ class SeriesController extends AbstractController
     #[Route('series/create', name: 'app_series_form', methods: ['GET'])]
     public function addSeriesForm(): Response
     {
-        return $this->render('series/form.html.twig');
+        $seriesForm = $this->createFormBuilder(new Series(name: ''))
+            ->add(child: 'name', type: TextType::class, options: ['label' => 'Nome:'])
+            ->add(child: 'save', type: SubmitType::class, options: ['label' => 'Adicionar'])
+            ->getForm();
+
+        return $this->renderForm('series/form.html.twig', compact(var_name: 'seriesForm'));
     }
 
     #[Route('series/create', name: "app_add_series", methods: ['POST'])]
