@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Series;
+use App\Form\SeriesType;
 use App\Repository\SeriesRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -10,8 +11,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class SeriesController extends AbstractController
 {
@@ -32,23 +31,24 @@ class SeriesController extends AbstractController
     #[Route('series/create', name: 'app_series_form', methods: ['GET'])]
     public function addSeriesForm(): Response
     {
-        $seriesForm = $this->createFormBuilder(new Series(name: ''))
-            ->add(child: 'name', type: TextType::class, options: ['label' => 'Nome:'])
-            ->add(child: 'save', type: SubmitType::class, options: ['label' => 'Adicionar'])
-            ->getForm();
-
+        $seriesForm = $this->createForm(type: SeriesType::class, data: new Series());
         return $this->renderForm('series/form.html.twig', compact(var_name: 'seriesForm'));
     }
 
     #[Route('series/create', name: "app_add_series", methods: ['POST'])]
     public function addSeries(Request $request): Response
     {
-        $seriesName = $request->get("name");
-        $series = new Series($seriesName);
-        $this->addFlash(type: 'success', message: "Série \"{$seriesName}\" adicionada com sucesso");
+        $series = new Series();
+        $seriesForm = $this->createForm(type: SeriesType::class, data: $series)
+            ->handleRequest($request);
+
+        if (!$seriesForm->isValid()) {
+            return $this->renderForm(view: 'series/form.html.twig', parameters: compact('seriesForm'));
+        }
+
+        $this->addFlash(type: 'success', message: "Série \"{$series->getName()}\" adicionada com sucesso");
 
         $this->seriesRepository->save($series, flush: true);
-
         return new RedirectResponse('/series');
     }
 
