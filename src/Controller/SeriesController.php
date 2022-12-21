@@ -42,7 +42,7 @@ class SeriesController extends AbstractController
         $seriesForm = $this->createForm(type: SeriesType::class, data: $series)
             ->handleRequest($request);
 
-        if (!$seriesForm->isValid()) {
+        if (!$seriesForm->isValid()) { //validação garantida pelo servidor impedindo invalidação forçada pelo browser
             return $this->renderForm(view: 'series/form.html.twig', parameters: compact('seriesForm'));
         }
 
