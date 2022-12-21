@@ -14,10 +14,19 @@
             {{ encore_entry_script_tags('app') }}
         {% endblock %}
     </head>
-    <body>
-    <div class="container">
-        <h1>{{ block('title') }}</h1>
-        {% block body %}{% endblock %}
-    </div>
+    <body>        
+        <div class="container">
+            <h1>{{ block('title') }}</h1>
+
+            {% for type, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ type }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endfor %}
+
+            {% block body %}{% endblock %}
+        </div>
     </body>
 </html>
