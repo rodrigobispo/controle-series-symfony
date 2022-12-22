@@ -9,6 +9,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: SeasonRepository::class)]
+#[ORM\Cache]
 class Season
 {
     #[ORM\Id]
@@ -21,6 +22,7 @@ class Season
             targetEntity: Episode::class,
             orphanRemoval: true,
             cascade: ['persist', 'remove'])]
+    #[ORM\Cache]
     private Collection $episodes;
 
     #[ORM\ManyToOne(targetEntity: Series::class, inversedBy: 'seasons')]
