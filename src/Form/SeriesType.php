@@ -14,7 +14,8 @@ class SeriesType extends AbstractType
     {
         $builder
             ->add(child: 'name', options: ['label' => 'Nome:'])
-            ->add(child: 'save', type: SubmitType::class, options: ['label' => 'Adicionar'])
+            ->add(child: 'save', type: SubmitType::class, options: ['label' => $options['is_edit'] ? 'Editar' : 'Adicionar'])
+            ->setMethod($options['is_edit'] ? 'PATCH' : 'POST')
         ;
     }
 
@@ -22,6 +23,9 @@ class SeriesType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Series::class,
+            'is_edit' => false,
         ]);
+
+        $resolver->setAllowedTypes(option: 'is_edit', allowedTypes: 'bool');
     }
 }

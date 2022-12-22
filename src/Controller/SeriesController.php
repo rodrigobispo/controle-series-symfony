@@ -14,7 +14,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class SeriesController extends AbstractController
 {
-    public function __construct(private SeriesRepository $seriesRepository, private EntityManagerInterface $entityManager)
+    public function __construct(private SeriesRepository $seriesRepository,
+        private EntityManagerInterface $entityManager)
     {
     }
 
@@ -28,12 +29,14 @@ class SeriesController extends AbstractController
         ]);
     }
 
+
     #[Route('series/create', name: 'app_series_form', methods: ['GET'])]
     public function addSeriesForm(): Response
     {
         $seriesForm = $this->createForm(type: SeriesType::class, data: new Series());
         return $this->renderForm('series/form.html.twig', compact(var_name: 'seriesForm'));
     }
+
 
     #[Route('series/create', name: "app_add_series", methods: ['POST'])]
     public function addSeries(Request $request): Response
@@ -52,6 +55,7 @@ class SeriesController extends AbstractController
         return new RedirectResponse('/series');
     }
 
+
     #[Route('/series/delete/{id}', name: 'app_delete_series', methods: ['DELETE'])]
     public function deleteSeries(int $id, Request $request): Response
     {
@@ -62,16 +66,25 @@ class SeriesController extends AbstractController
         return new RedirectResponse(url: '/series');
     }
 
+
     #[Route('/series/edit/{series}', name: 'app_edit_series_form', methods: ['GET'])]
     public function editSeriesForm(Series $series): Response
     {
-        return $this->render('series/form.html.twig', compact(var_name: 'series'));
+        $seriesForm = $this->createForm(type: SeriesType::class, data: $series, options: ['is_edit' => true]);
+        return $this->renderForm('series/form.html.twig', compact('seriesForm', 'series'));
     }
+
 
     #[Route('/series/edit/{series}', name: 'app_store_series_changes', methods: ['PATCH'])]
     public function storeSeriesChanges(Series $series, Request $request): Response
     {
-        $series->setName($request->request->get('name'));
+        $seriesForm = $this->createForm(type: SeriesType::class, data: $series, options: ['is_edit' => true]);
+        $seriesForm->handleRequest($request);
+
+        if (!$seriesForm->isValid()) {
+            return $this->renderForm('series/form.html.twig', compact('seriesForm', 'series'));
+        }
+
         $this->addFlash(type: 'success', message: "Série \"{$series->getName()}\" editada com sucesso");
         $this->entityManager->flush();
 
