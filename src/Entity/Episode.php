@@ -11,12 +11,12 @@ class Episode
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+    #[ORM\Column(type: 'integer')]
+    private int $id;
 
-    #[ORM\ManyToOne(inversedBy: 'episodes')]
+    #[ORM\ManyToOne(targetEntity: Season::class, inversedBy: 'episodes')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Season $season = null;
+    private Season $season;
 
     public function __construct(
         #[ORM\Column(type: Types::SMALLINT)]
@@ -29,7 +29,7 @@ class Episode
         return $this->id;
     }
 
-    public function getNumber(): int
+    public function getNumber(): ?int
     {
         return $this->number;
     }

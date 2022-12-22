@@ -8,8 +8,12 @@
 
     {{ form_start(seriesForm) }}
     {{ form_row(seriesForm.seriesName) }}
-    {{ form_row(seriesForm.seasonsQuantity) }}
-    {{ form_row(seriesForm.episodesPerSeason) }}
+
+    {% if series is not defined %}
+        {{ form_row(seriesForm.seasonsQuantity) }}
+        {{ form_row(seriesForm.episodesPerSeason) }}
+    {% endif %}
+
     {{ form_widget(seriesForm.save, {'attr': {'class': 'btn-dark'}}) }}
     {{ form_end(seriesForm) }}
 

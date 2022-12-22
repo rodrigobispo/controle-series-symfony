@@ -26,7 +26,7 @@ class Series
         #[ORM\Column(length: 150)]
         #[Assert\NotBlank]
         #[Assert\Length(min: 5)]
-    private string $name = '')
+        private string $name = '')
     {
         $this->seasons = new ArrayCollection();
     }

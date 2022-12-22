@@ -72,7 +72,6 @@ class SeriesController extends AbstractController
     public function deleteSeries(int $id, Request $request): Response
     {
         $this->seriesRepository->removeById($id);
-        $session = $request->getSession();
         $this->addFlash(type: 'success', message: "Série removida com sucesso");
 
         return new RedirectResponse(url: '/series');
@@ -94,7 +93,9 @@ class SeriesController extends AbstractController
     #[Route('/series/edit/{series}', name: 'app_store_series_changes', methods: ['PATCH'])]
     public function storeSeriesChanges(Series $series, Request $request): Response
     {
-        $seriesForm = $this->createForm(type: SeriesType::class, data: $series, options: ['is_edit' => true]);
+        $seriesForm = $this->createForm(type: SeriesType::class,
+            data: new SeriesCreateFromInput($series->getName()),
+            options: ['is_edit' => true]);
         $seriesForm->handleRequest($request);
 
         if (!$seriesForm->isValid()) {

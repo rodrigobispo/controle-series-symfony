@@ -16,8 +16,16 @@ class SeriesType extends AbstractType
     {
         $builder
             ->add('seriesName', options: ['label' => 'Nome:'])
-            ->add('seasonsQuantity', type: NumberType::class, options: ['label' => 'Qtd Temporadas:'])
-            ->add('episodesPerSeason', type: NumberType::class, options: ['label' => 'Ep por Temporada:'])
+        ;
+
+        if (!$options['is_edit']) {
+            $builder
+                ->add('seasonsQuantity', type: NumberType::class, options: ['label' => 'Qtd Temporadas:'])
+                ->add('episodesPerSeason', type: NumberType::class, options: ['label' => 'Ep por Temporada:'])
+            ;            
+        }
+
+        $builder
             ->add(child: 'save', type: SubmitType::class, options: ['label' => $options['is_edit'] ? 'Editar' : 'Adicionar'])
             ->setMethod($options['is_edit'] ? 'PATCH' : 'POST')
         ;
