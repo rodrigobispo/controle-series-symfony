@@ -4,14 +4,27 @@ security:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
-        users_in_memory: { memory: null }
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: email
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
             lazy: true
-            provider: users_in_memory
+            provider: app_user_provider
+            form_login:
+                # "app_login" is the name of the route created previously
+
+                # login_path é uma rota existente para onde o Symfony redirecionará o usuário que tentar acessar uma rota protegida sem estar logado.
+
+                # Já o check_path é uma rota (também existente) que será interceptada pelo Symfony para autenticar o usuário.
+                # É para ela que o formulário de login deve enviar a requisição. Sempre que uma requisição chegar nessa rota, 
+                # o firewall interceptará e realizará todo o processo de autenticação.
+                login_path: app_login
+                check_path: app_login
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
